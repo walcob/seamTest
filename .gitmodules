@@ -1,0 +1,3 @@
+[submodule "GeoFold"]
+	path = GeoFold
+	url = git@github.com:walcob/GeoFold
