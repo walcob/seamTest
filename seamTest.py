@@ -4,6 +4,13 @@ import sys
 import argparse
 import glob
 
+def cleanup():
+    None
+    
+def writeParamaters():
+    None
+    
+
 def main():
     # getchain
     # renumber
@@ -13,3 +20,4 @@ def main():
     # contactmask
     # seams
     # cleanup
+    None
