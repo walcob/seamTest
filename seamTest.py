@@ -7,11 +7,13 @@ import glob
 def cleanup():
     None
     
-def writeParamaters():
+def writeParamaters(parfile):
     None
-    
 
 def main():
+    # Get list of pdbs
+    barrels = glob.glob("database/barrels/*")
+    nonBarrels = glob.glob("database/nonbarrels/*")
     # getchain
     # renumber
     # 3to1
