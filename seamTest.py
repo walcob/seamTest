@@ -13,8 +13,7 @@ def main():
     nonBarrels = glob.glob("database/nonbarrels/*")
     pdbs = barrels+nonBarrels
     for pdb in pdbs:
-        # parameters
-        
+        print("="*10,pdb,"="*10)
         # renumber
         subprocess.run(["GeoFold/xrenumber_one",pdb,"%s_1.pdb"%(pdb)],stdout=sys.stdout)
         # pdb2hb
@@ -27,3 +26,5 @@ def main():
         seamfile.close()
         # cleanup
         cleanup(pdb)
+    
+if __name__ == "__main__": main()
