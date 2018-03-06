@@ -99,3 +99,9 @@ ENV/
 
 # mypy
 .mypy_cache/
+
+# project-specific
+*.hb
+*.seams
+*_1.pdb
+*.pse
