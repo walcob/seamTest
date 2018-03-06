@@ -22,15 +22,23 @@ def runTest(pdb):
     seamfile = open("seamfiles/%s.seams"%(basename),"w+")
     subprocess.run(["GeoFold/seams/xpdb2seams2","%s.hb"%(basename)],stdout=seamfile,stderr=sys.stdout)
     seamfile.close()
+    return basename
     
 def main():
     # Get list of pdbs
-    barrels = glob.glob("database/barrels/*")
-    nonBarrels = glob.glob("database/nonbarrels/*")
-    pdbs = barrels+nonBarrels
+    parser = argparse.ArgumentParser(description="Test seams")
+    parser.add_argument("--all",action="store_true",default=False)
+    parser.add_argument("--debug",action="store_true")
+    parser.add_argument("-f",nargs='+')
+    args = parser.parse_args()
+    pdbs = []
+    if(args.all):
+        pdbs += glob.glob("database/barrels/*") + glob.glob("database/nonbarrels/*")
+    if(args.f is not None): pdbs += args.f
     for pdb in pdbs:
-        runTest(pdb)
+        basename = runTest(pdb)
         # cleanup
-        cleanup(basename)
+        if(args.debug):
+            cleanup(basename)
     
 if __name__ == "__main__": main()
