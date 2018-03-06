@@ -38,7 +38,7 @@ def main():
         pdbs += glob.glob("database/barrels/*") + glob.glob("database/nonbarrels/*")
     if(args.f is not None): pdbs += args.f
     for pdb in pdbs:
-        basename = runTest(pdb,args.debug)
+        basename = runTest(pdb)
         # cleanup
         if(not args.debug):
             cleanup(basename)
