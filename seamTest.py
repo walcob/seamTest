@@ -10,15 +10,17 @@ def cleanup(basename):
 
 def runTest(pdb):
     basename = os.path.basename(pdb)[:-4]
-    print(basename)
-    print("="*10,pdb,"="*10)
+    print("="*25,basename,"="*25)
     # renumber
+    print("="*25,"Renumbering","="*25)
     subprocess.run(["GeoFold/xrenumber_one",pdb,"%s_1.pdb"%(basename)],stdout=sys.stdout)
     # pdb2hb
+    print("="*25,"Extracting H-bonds","="*25)
     hbfile = open("%s.hb"%(basename),"w+")
     subprocess.run(["GeoFold/xpdb2hb","default.par","%s_1.pdb"%(basename)],stdout=hbfile,stderr=sys.stdout)
     hbfile.close()
     # seams
+    print("="*25,"Finding Seams","="*25)
     seamfile = open("seamfiles/%s.seams"%(basename),"w+")
     subprocess.run(["GeoFold/seams/xpdb2seams2","%s.hb"%(basename)],stdout=seamfile,stderr=sys.stdout)
     seamfile.close()
@@ -36,9 +38,9 @@ def main():
         pdbs += glob.glob("database/barrels/*") + glob.glob("database/nonbarrels/*")
     if(args.f is not None): pdbs += args.f
     for pdb in pdbs:
-        basename = runTest(pdb)
+        basename = runTest(pdb,args.debug)
         # cleanup
-        if(args.debug):
+        if(not args.debug):
             cleanup(basename)
     
 if __name__ == "__main__": main()
