@@ -25,6 +25,19 @@ def runTest(pdb):
     subprocess.run(["GeoFold/seams/xpdb2seams2","%s.hb"%(basename)],stdout=seamfile,stderr=sys.stdout)
     seamfile.close()
     return basename
+
+def makepar(pdb,parfile):
+    fout = open(parfile,'w+')
+    fout.write("LNAME %s\n"%(os.path.basename(pdb)))
+    fout.write("EMAIL walcob@rpi.edu\n")
+    fout.write("PDBCODE %s\n"%(os.path.basename(pdb)[:-4]))
+    fout.write("OMEGA 1.\nINTERMEDIATE 0\nBARRELMOVES 1\nORANGE 0. 0.2 0.4 0.6 0.8 1.0 1.2 1.4\nRUNGEOFOLD 1\nMOLSCRIPT 0\nBREAKCUT 0.05\nPIVOTCUT 0.01\nHINGECUT 0.5\nSEAMCUT 10\nBREAKPOINTENTROPY 90.\nHINGEPOINTENTROPY 30.\nTEMPERATURE 300.\nCONCENTRATION 1.\nVOIDENTROPY 0.\nSOLIDITY 1000.\nHBONDENERGY 100.\nHAMMONDSCALE 1000.\nSIDECHAINENTROPY 1.\nHINGEBARRIER 0.\nPIVOTBARRIER 0.\nWATER 1.\nMAXSPLIT 4\nMAXTIME 10.\nMINSEG 4\nCAVITATION 0.000001\nFLORY 0\nSUBMIT submit\nREDUCING 0\nMOLSCRIPT 1\nHLFE 0\nFING 0\nCHAIN +\nwc 1.\nwn 8.\n")
+    fout.close()
+
+def fullTest(pdb,parfile):
+    makepar(pdb,parfile)
+    subprocess.run(["python","GeoFold/rungeofold.py",parfile,"/Users/walcob/seamTest/seamTest.conf"],stdout=sys.stdout,stderr=sys.stdout)
+    
     
 def main():
     # Get list of pdbs
