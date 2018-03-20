@@ -109,3 +109,5 @@ tmp/
 output/
 *.par
 *.par.1
+*.txt
+*.log
