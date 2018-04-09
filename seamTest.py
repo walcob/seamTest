@@ -43,7 +43,7 @@ def makepar(pdb,parfile):
     fout.write("LNAME %s\n"%(os.path.basename(pdb)))
     fout.write("EMAIL walcob@rpi.edu\n")
     fout.write("PDBCODE %s\n"%(os.path.basename(pdb)[:-4]))
-    fout.write("OMEGA 1.\nINTERMEDIATE 0\nBARRELMOVES 1\nORANGE 0. 0.5 1.0 1.5\nRUNGEOFOLD 1\nMOLSCRIPT 0\nBREAKCUT 0.05\nPIVOTCUT 0.01\nHINGECUT 0.5\nSEAMCUT 10\nBREAKPOINTENTROPY 90.\nHINGEPOINTENTROPY 30.\nTEMPERATURE 300.\nCONCENTRATION 1.\nVOIDENTROPY 0.\nSOLIDITY 1000.\nHBONDENERGY 100.\nHAMMONDSCALE 1000.\nSIDECHAINENTROPY 1.\nHINGEBARRIER 0.\nPIVOTBARRIER 0.\nWATER 1.\nMAXSPLIT 4\nMAXTIME 10.\nMINSEG 4\nCAVITATION 0.000001\nFLORY 0\nSUBMIT submit\nREDUCING 0\nMOLSCRIPT 1\nHLFE 0\nFING 0\nCHAIN +\nwc 1.\nwn 8.\n")
+    fout.write("OMEGA 1.\nINTERMEDIATE 0\nBARRELMOVES 1\nORANGE 0. 0.5 1.0 1.5\nRUNGEOFOLD 1\nMOLSCRIPT 0\nBREAKCUT 0.05\nPIVOTCUT 0.25\nHINGECUT 0.5\nSEAMCUT 10\nBREAKPOINTENTROPY 90.\nHINGEPOINTENTROPY 30.\nTEMPERATURE 300.\nCONCENTRATION 1.\nVOIDENTROPY 0.\nSOLIDITY 1000.\nHBONDENERGY 100.\nHAMMONDSCALE 1000.\nSIDECHAINENTROPY 1.\nHINGEBARRIER 0.\nPIVOTBARRIER 0.\nWATER 1.\nMAXSPLIT 4\nMAXTIME 10.\nMINSEG 4\nCAVITATION 0.000001\nFLORY 0\nSUBMIT submit\nREDUCING 0\nMOLSCRIPT 1\nHLFE 0\nFING 0\nCHAIN +\nwc 1.\nwn 8.\n")
     fout.close()
 
 def fullTest(pdb,parfile,log):
@@ -94,7 +94,7 @@ def SCOPeTest():
     # run tests
     for i in range(rank,len(pdbs),size):
         print(pdbs[i]);sys.stdout.flush()
-        basename = runTest(pdbs[i])
+        basename = runTest(pdbs[i],log=sys.stdout)
         foundBarrel = findBarrel(basename)
         print(i,pdbs[i],foundBarrel)    ;sys.stdout.flush()
         # add results to correct dictionary
@@ -109,7 +109,7 @@ def SCOPeTest():
             except KeyError:
                 nonbarrels[SCOPe[pdb]] = [pdb]
         # cleanup unneeded files
-        cleanup(basename)
+        cleanup(basename,log=sys.stdout)
     # write output
     writeSCOPe(barrels,"SCOPeBarrels_%i.txt"%(rank),nonbarrels,"SCOPeNonbarrels_%i.txt"%(rank))
 
@@ -135,10 +135,10 @@ def doFullTests(log):
     size = comm.Get_size()
     if log != sys.stdout: log = open("%s_%i.%s"%(log.split('.')[0],rank,log.split('.')[1]),'ab')
     # load pdbs
-    pdbs = glob.glob("database/*barrels/*")
+    pdbs = ['database/barrels/2B3P.pdb','database/barrels/2AWJ.pdb','database/barrels/1I1B.pdb','database/barrels/1R2T.pdb','database/barrels/1JOO.pdb']
     for i in range(rank,len(pdbs),size):
         print(i,rank,pdbs[i]);sys.stdout.flush()
-        fullTest(pdbs[i],"%s.par"%(os.path.basename(pdbs[1])[:-4]),log)
+        fullTest(pdbs[i],"%s.par"%(os.path.basename(pdbs[i])[:-4]),log)
         
     if log != sys.stdout: log.close()
     
@@ -166,7 +166,7 @@ def main():
             pdbs += glob.glob("database/barrels/*") + glob.glob("database/nonbarrels/*")
         if(args.f is not None): pdbs += args.f
         for pdb in pdbs:
-            basename = runTest(pdb)
+            basename = runTest(pdb,log)
             # cleanup
             if(not args.debug):
                 cleanup(basename,log)
